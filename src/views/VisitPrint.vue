@@ -8,13 +8,13 @@
 					<img src="../assets/images/headerLogo1.png" width="108" height="62" />
 				</div>
 				<div class="content">
-					<p>访客姓名：张三</p>
-					<p>访客时间：2019-12-22 13:20:12</p>
-					<p>访问人数：1人</p>
-					<p>访问类型：临时访问</p>
+					<p>访客姓名：{{username}}</p>
+					<p>访客时间：{{date}}</p>
+					<p>访问人数：{{mun}}</p>
+					<p>访问类型：{{type}}</p>
 				</div>
 			</div>
-			<button class="btn" v-print="'#printTest'">打印卡贴</button>
+			<button class="btn" v-print="'#printTest'" @click="printCard">打印卡贴</button>
 		</div>
 	</div>
 </template>
@@ -22,15 +22,38 @@
 <script>
 	import Header from "@/components/Header.vue";
 	import TipsText from "@/components/TipsText.vue";
+	import {getfindByPassport} from "@/apis/apis.js";
 	export default {
 		data() {
 			return {
-				text: "访客登记拍照成功。打印卡贴。"
+				text: "访客登记拍照成功。打印卡贴。",
+				username:"",
+				date:"",
+				mun:"",
+				type:"",
 			}
 		},
 		components: {
 			Header,
 			TipsText
+		},
+		methods:{
+			printCard(){
+				this.$router.push('/registersuccess');
+			}
+		},
+		mounted(){
+			getfindByPassport().then((data)=>{
+				console.log(data)
+				let{
+					USER_NAME,
+					VISIT_DATE,
+					TYPE,
+				} = data.returnMsg;
+				this.username = USER_NAME;
+				this.date = VISIT_DATE;
+				this.type = TYPE;
+			})
 		}
 	}
 </script>
@@ -53,7 +76,8 @@
 
 			.content {
 				height: 238px;
-				background: #F1F1F1 !important;
+				background-color: #F1F1F1 !important;
+				-webkit-print-color-adjust: exact;
 				font-size: 22px;
 				color: #333333;
 				padding: 25px 0 30px 93px;

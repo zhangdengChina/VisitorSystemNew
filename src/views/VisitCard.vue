@@ -38,7 +38,7 @@
 			</div>
 			<LeftTitle title="读取证件" titleEnglish="Passport Reader" />
 			<div class="Passport-Reader">
-				<div>
+				<div class="autoInput">
 					<img src="../assets/images/card.png" />
 					<el-radio v-model="radio" :label="1" @change="changeradio"></el-radio>
 				</div>
@@ -46,14 +46,25 @@
 					<img src="../assets/images/papers1.png" />
 					<el-radio v-model="radio" :label="2" @change="changeradio"></el-radio>
 				</div>
-				<!-- <div>
-					<span>手动输入</span>
-					<el-radio v-model="radio" :label="3" @change="changeradio" @click="manual"></el-radio>
-				</div> -->
-				<div>
+				<div class="manualInput">
+					<div>
+						<span>手动输入</span>
+						<el-radio v-model="radio" :label="3" @change="changeradio;manualInput()"></el-radio>
+					</div>
+					<div :class="{manual:manual}">
+						<p>
+							身份证:<el-radio v-model="manualradio" :label="4" @change="changeradio"></el-radio>
+							护&emsp;照:<el-radio v-model="manualradio" :label="5" @change="changeradio"></el-radio>
+						</p>
+						<p>
+							<el-input :placeholder="'请输入'+placeholder" v-model="cardnumber"></el-input>
+						</p>
+					</div>
+				</div>
+				<div class="autoInput">
 					<p>将身份证/护照件置于读卡器，点击此按钮</p>
 					<p>Put the ID card in the card reader, click this button</p>
-					<button @click="papers">读取证件</button>
+					<button @click="papers('visitCard')">读取证件</button>
 				</div>
 			</div>
 			<LeftTitle title="事件信息" titleEnglish="Event Info" />
@@ -61,7 +72,7 @@
 				<el-form-item prop="purpose">
 					<div class="labletext">
 						<p>来访事由</p>
-						<p>purpose</p>
+						<p>Purpose</p>
 					</div>
 					<el-select :disabled="auto" v-model="visitCard.purpose" width="700">
 						<el-option label="{visitCard.purpose}" value="{visitCard.purpose}"></el-option>
@@ -70,7 +81,7 @@
 				<el-form-item prop="date">
 					<div class="labletext">
 						<p>来访日期</p>
-						<p>date</p>
+						<p>Date</p>
 					</div>
 					<el-date-picker :disabled="auto" v-model="visitCard.date" type="date" placeholder="选择日期">
 					</el-date-picker>
@@ -78,14 +89,14 @@
 				<el-form-item prop="area">
 					<div class="labletext">
 						<p>来访区域</p>
-						<p>area</p>
+						<p>Area</p>
 					</div>
 					<el-input :disabled="auto" v-model="visitCard.area"></el-input>
 				</el-form-item>
 				<el-form-item prop="type">
 					<div class="labletext">
 						<p>访客类型</p>
-						<p>type</p>
+						<p>Type</p>
 					</div>
 					<el-select :disabled="auto" v-model="visitCard.type" width="700">
 						<el-option label="{visitCard.type}" value="{visitCard.type}"></el-option>
@@ -101,20 +112,20 @@
 				<hr />
 				<LeftTitle title="自动识别身份" titleEnglish="Automatic Identification" />
 				<div class="visitors">
-					<p>来访人员信息类型：普通访客</p>
-					<p>Visitor Info: Regular visitors</p>
+					<p>来访人员信息类型：{{visitCard.type}}</p>
+					<p>Visitor Info: {{visitCard.typeEnglish}}</p>
 				</div>
 				<el-form-item prop="name">
 					<div class="labletext">
 						<p>姓名</p>
-						<p>name</p>
+						<p>Name</p>
 					</div>
 					<el-input :disabled="auto" v-model="visitCard.name"></el-input>
 				</el-form-item>
 				<el-form-item prop="sex">
 					<div class="labletext">
 						<p>性别</p>
-						<p>sex</p>
+						<p>Sex</p>
 					</div>
 					<el-input :disabled="auto" v-model="visitCard.sex"></el-input>
 				</el-form-item>
@@ -128,7 +139,7 @@
 				<el-form-item prop="address">
 					<div class="labletext">
 						<p>地址</p>
-						<p>address</p>
+						<p>Address</p>
 					</div>
 					<el-input :disabled="auto" v-model="visitCard.address"></el-input>
 				</el-form-item>
@@ -136,7 +147,7 @@
 				<el-form-item prop="selection">
 					<div class="labletext">
 						<p>地区</p>
-						<p>region selection</p>
+						<p>Region Selection</p>
 					</div>
 					<el-select :disabled="auto" v-model="visitCard.selection" width="700">
 						<el-option label="{visitCard.selection}" value="{visitCard.selection}"></el-option>
@@ -145,21 +156,21 @@
 				<el-form-item prop="phone">
 					<div class="labletext">
 						<p>手机</p>
-						<p>mobile phone number</p>
+						<p>Mobile Phone Number</p>
 					</div>
 					<el-input :disabled="auto" v-model="visitCard.phone"></el-input>
 				</el-form-item>
 				<el-form-item prop="company">
 					<div class="labletext">
 						<p>公司</p>
-						<p>company</p>
+						<p>Company</p>
 					</div>
 					<el-input :disabled="auto" v-model="visitCard.company"></el-input>
 				</el-form-item>
 				<el-form-item>
 					<el-button type="primary" @click="onSubmit">确定</el-button>
 					<el-button @click="resetForm('visitCard')">重置</el-button>
-					<el-button>帮助</el-button>
+					<!-- <el-button>帮助</el-button> -->
 				</el-form-item>
 			</el-form>
 		</div>
@@ -170,16 +181,16 @@
 				<p>奔驰访客须知</p>
 				<p>Notice to Mercedes Benz visitors</p>
 			</div>
-			<div class="dialog-content">
-				<pdf class="pdf" src="../../static/pdf/Safetyinstructions.pdf"></pdf>
+			<div class="dialog-content" id="dialog-content-scroll">
+				<pdf class="pdf" :src="pdfUrl"></pdf>
 			</div>
 			<span slot="footer" class="dialog-footer">
 				<div class="dialog-footer-left">
-					<label class="inputcheckbox">
-					<p>
-						<input type="checkbox" v-model="checked" /><span></span>本人已阅读并承诺遵守上述条款
-					</p>
-					<p>I accept and undertake to abide by above terms</p>
+					<label class="inputcheckbox" @click="clickVisitorsChecked">
+						<p>
+							<input type="checkbox" v-model="checked" :disabled="VisitorsChecked" /><span></span>本人已阅读并承诺遵守上述条款
+						</p>
+						<p>I accept and undertake to abide by above terms</p>
 					</label>
 				</div>
 				<div class="dialog-footer-right">
@@ -195,11 +206,21 @@
 	import Header from "@/components/Header.vue";
 	import LeftTitle from "@/components/LeftTitle.vue";
 	import pdf from "vue-pdf";
+	import {
+		getfindByPassport,
+		getfindNotice
+	} from "@/apis/apis.js";
 	export default {
 		data() {
 			return {
 				// 选择读取方式
-				radio: "",
+				radio: 1,
+				// 手动输入
+				manualradio: 4,
+				// 手动输入显示隐藏
+				manual: true,
+				placeholder: "身份证号",
+				idnum: "123",
 				// 表单
 				visitCard: {
 					// 事件信息
@@ -207,6 +228,7 @@
 					date: '',
 					area: "",
 					type: "",
+					typeEnglish: "",
 					// verification: "",
 					// 自动识别
 					name: "",
@@ -217,10 +239,14 @@
 					phone: "",
 					company: "",
 				},
-				automatic: 0, //自动识别身份
+				automatic: 1, //自动识别身份
 				centerDialogVisible: false, //模态框显示隐藏
 				checked: false, // 阅读协议
 				auto: true, // 输入框禁用
+				VisitorsChecked: true, // 访客需知禁用
+				// http:"https://www.hemingbi.com/fangke/",
+				pdfUrl: "", // pdf文档路径
+				cardnumber: "",
 			}
 		},
 		components: {
@@ -231,40 +257,95 @@
 		methods: {
 			// 单选更改状态
 			changeradio(e) {
-				e ? this.automatic = 1 : this.automatic = 0
+				e ? this.automatic = 1 : this.automatic = 0;
+				this.radio === 1 || this.radio === 2 ? this.manual = true : this.manual = false;
+				this.manualradio === 5 ? this.placeholder = '护照号' : this.placeholder = '身份证号';
+				this.cardnumber = '';
+				this.$refs.visitCard.resetFields();
 			},
 			// 提交表单
 			onSubmit() {
-				console.log(this.visitCard);
 				// 发起请求
-
-
-				this.$router.push('/visitphoto')
+				if(this.visitCard.ID){
+					this.$router.push('/visitphoto')
+				}else{
+					this.$message.warning('请先读取证件信息！');
+				}
 			},
 			// 重置表单
 			resetForm(formName) {
 				this.$refs[formName].resetFields();
 			},
+			// 手动输入
+			manualInput() {
+				this.manual = false;
+			},
 			// 读取证件
-			papers() {
-				if (this.radio) {
-					this.automatic = 2;
-					// 发起请求，接收数据
-					this.visitCard = {
-						// 事件信息
-						purpose: '就看一看',
-						date: '2019-12-31',
-						area: "郫县",
-						type: "普通访客",
-						// verification: "",
-						// 自动识别
-						name: "张三疯",
-						sex: "男",
-						ID: "889898998",
-						address: "中国-四川省-成都市-锦江区-条河路三段301号",
-						selection: "+86  中国    +86 china",
-						phone: "1223313232",
-						company: "是是是",
+			papers(formName) {
+				this.automatic = 2;
+				if (this.radio === 1 || this.radio === 2) {
+					this.$refs[formName].resetFields();
+					getfindByPassport().then((data) => {
+						if(data.msgType===-1)	this.$message.error('访客信息获取失败！')
+						let {
+							VISIT_REASON, // 来访事由
+							VISIT_DATE, // 来访日期
+							VISIT_AREA, // 来访区域
+							TYPE, // 访客类型
+							USER_NAME, // 姓名	
+							SEX, // 性别
+							PASSPORT, // 护照、身份证
+							// 地址
+							// 地区
+							USER_PHONE, // 手机号
+							COMPANY, // 公司
+						} = data.returnMsg;
+						this.visitCard.purpose = VISIT_REASON;
+						this.visitCard.date = VISIT_DATE;
+						this.visitCard.area = VISIT_AREA;
+						this.visitCard.type = TYPE;
+						TYPE === '短期访客' ? this.visitCard.typeEnglish = 'Short Term Visitors' : this.visitCard.typeEnglish =
+							'Temporary Visitor';
+						this.visitCard.name = USER_NAME;
+						this.visitCard.sex = SEX;
+						this.visitCard.ID = PASSPORT;
+						this.visitCard.phone = USER_PHONE;
+						this.visitCard.company = COMPANY;
+					})
+				} else if (this.radio === 3) {
+					if (this.cardnumber) {
+						getfindByPassport({
+							PASSPORT: this.cardnumber
+						}).then((data) => {
+							// console.log(data)
+							if(data.msgType===-1) this.$message.error(data.returnMsg)
+							let {
+								VISIT_REASON, // 来访事由
+								VISIT_DATE, // 来访日期
+								VISIT_AREA, // 来访区域
+								TYPE, // 访客类型
+								USER_NAME, // 姓名	
+								SEX, // 性别
+								PASSPORT, // 护照、身份证
+								// 地址
+								// 地区
+								USER_PHONE, // 手机号
+								COMPANY, // 公司
+							} = data.returnMsg;
+							this.visitCard.purpose = VISIT_REASON;
+							this.visitCard.date = VISIT_DATE;
+							this.visitCard.area = VISIT_AREA;
+							this.visitCard.type = TYPE;
+							TYPE === '短期访客' ? this.visitCard.typeEnglish = 'Short Term Visitors' : this.visitCard.typeEnglish =
+								'Temporary Visitor';
+							this.visitCard.name = USER_NAME;
+							this.visitCard.sex = SEX;
+							this.visitCard.ID = PASSPORT;
+							this.visitCard.phone = USER_PHONE;
+							this.visitCard.company = COMPANY;
+						})
+					}else{
+						this.$message.error('身份证号或护照号不能为空！');
 					}
 				} else {
 					this.$message.error('请先选择读取类型！');
@@ -275,17 +356,44 @@
 				this.checked ? this.centerDialogVisible = false : this.centerDialogVisible = true;
 				if (!this.checked) {
 					this.$message.error('请先勾选访客须知承诺！');
+				}else{
+					window.removeEventListener('scroll', this.handleScroll); //  离开页面清除（移除）滚轮滚动事件
+				}
+			},
+			// 访客需知
+			clickVisitorsChecked() {
+				if (this.VisitorsChecked) {
+					this.$message.warning('请先阅读来访安全需知！');
 				}
 			},
 			// 访客须知取消返回首页
 			cancel() {
 				this.$router.replace('/');
 			},
+			// 监听滚动
+			handleScroll() {
+				// PDF滚动
+				let scrollObj = document.getElementById('dialog-content-scroll'); // 滚动区域
+				let scrollTop = scrollObj.scrollTop; // div 到头部的距离
+				let scrollHeight = scrollObj.scrollHeight; // 滚动条的总高度
+				// 滚动条到底部的条件
+				if (scrollHeight - (scrollObj.offsetHeight - 2) === scrollTop) {
+					this.VisitorsChecked = false;
+				}
+			}
 		},
 		mounted() {
 			// 显示模态框
 			this.centerDialogVisible = true;
+			// 请求pdf文件
+			getfindNotice().then((data) => {
+				this.pdfUrl = data.returnMsg.NOTICEURL;
+			})
+			window.addEventListener('scroll', this.handleScroll, true); // 监听（绑定）滚轮滚动事件
 		},
+		destroyed() {
+			// window.removeEventListener('scroll', this.handleScroll); //  离开页面清除（移除）滚轮滚动事件
+		}
 	}
 </script>
 
@@ -360,9 +468,9 @@
 			.Passport-Reader {
 				display: flex;
 				margin-top: 30px;
-				width: 1200px;
+				width: 1300px;
 
-				div {
+				.autoInput {
 					display: flex;
 					justify-content: center;
 					align-items: center;
@@ -380,6 +488,40 @@
 					span {
 						width: 64px;
 						margin-left: 40px;
+					}
+				}
+
+				.manualInput {
+					margin-left: 40px;
+					display: flex;
+					flex-direction: column;
+					justify-content: center;
+
+					p {
+						margin-top: 15px;
+
+						/deep/.el-radio__inner {
+							width: 20px;
+							height: 20px;
+						}
+
+						/deep/ .el-radio__inner::after {
+							width: 10px;
+							height: 10px;
+						}
+					}
+
+					/deep/ .el-input {
+						width: 200px;
+						margin: 0;
+
+						.el-input__inner {
+							height: 35px;
+						}
+					}
+
+					div:last-child {
+						margin: 0;
 					}
 				}
 
@@ -413,12 +555,27 @@
 				width: 1000px;
 
 				/deep/.el-form-item {
+					//测试
+					// width: 500px;
+					// .el-input__inner{
+					// 	width: 350px;
+					// }
+					// .el-form-item__content{
+					// 	margin: 0;
+					// }
+					// .el-select{
+					// 	width: 350px;
+					// }
+					// .el-input{
+					// 	width: 350px;
+					// }
+					//
 					.el-form-item__content {
 						width: 100%;
 						display: flex;
 
 						.labletext {
-							width: 172px;
+							width: 180px;
 							text-align: right;
 							margin-right: 30px;
 
@@ -621,7 +778,10 @@
 		.inputcheckbox {
 			cursor: pointer;
 			height: 40px;
-			input {display: none;}
+
+			input {
+				display: none;
+			}
 
 			span {
 				display: inline-block;
@@ -640,6 +800,16 @@
 				font-size: 20px;
 				top: -10px;
 			}
+
+			input:disabled+span {
+				border: 1px solid red;
+				background: #f2f2f2;
+			}
+		}
+
+		// 手动输入隐藏
+		.manual {
+			display: none;
 		}
 	}
 </style>

@@ -17,9 +17,14 @@ export default new Router({
     	  component: () => import('../views/PersonnelCard.vue'),
     },
     {
-    	  path: '/registererr',
+    	  path: '/registererror',
     	  name: '登记失败',
-    	  component: () => import('../views/RegisterErr.vue'),
+    	  component: () => import('../views/RegisterError.vue'),
+    },
+    {
+    	  path: '/registersuccess',
+    	  name: '登记成功',
+    	  component: () => import('../views/RegisterSuccess.vue'),
     },
     {
     	  path:'/visitprint',

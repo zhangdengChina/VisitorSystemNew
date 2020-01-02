@@ -32,7 +32,7 @@
 		},
 		methods:{
 			backhome(){
-				this.$router.push('/');
+				this.$router.replace('/');
 			}
 		}
 	}

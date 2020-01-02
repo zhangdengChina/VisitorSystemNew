@@ -3,18 +3,18 @@
 		<Header name="访客访问中" />
 		<TipsText :text="text" />
 		<div class="content">
-			<LeftTitle title="确认邮件" titleEnglish="Confirm Email" />
+<!-- 			<LeftTitle title="确认邮件" titleEnglish="Confirm Email" />
 			<div class="email">
 				<div class="email-text">
-					<p>Dear(XXX of 员工 )</p>
+					<p>Dear({{name}} of 员工 )</p>
 					<p> You have the following visitor(s) registered to see you</p>
-					<p>(XXX) from (公司),phone number (手机号) is waiting for you at the lobby of (等待区域). </p>
+					<p>({{username}}) from ({{company}}),phone number ({{userphone}}) is waiting for you at the lobby of (等待区域). </p>
 					<p>Please come to the.</p>
 					<p>Regards,</p>
-					<p>XXX</p>
+					<p>{{REMARKS}}</p>
 				</div>
-			</div>
-			<hr />
+			</div> -->
+			<!-- <hr /> -->
 			<LeftTitle title="访客拍照" titleEnglish="Visitors taking photos" />
 			<div class="photo-content">
 				<img :src="headImgSrc" class="photo" alt="头像"/>
@@ -39,7 +39,7 @@
 			<video ref="video" width="800" height="600" autoplay :class="{videohide:videohide}"></video>
 			<span slot="footer" class="dialog-footer">
 				<el-button type="primary" @click="photograph()">{{photographText}}</el-button>
-				<el-button @click="closeCamera();dialogVisible = false">完 成</el-button>
+				<el-button @click="closeCamera()">完 成</el-button>
 			</span>
 		</el-dialog>
 	</div>
@@ -49,6 +49,7 @@
 	import Header from "@/components/Header.vue";
 	import TipsText from "@/components/TipsText.vue";
 	import LeftTitle from "@/components/LeftTitle.vue";
+	import {getfindByPassport,uploadImg} from "@/apis/apis.js";
 	export default {
 		data() {
 			return {
@@ -58,6 +59,12 @@
 				canvashide:true,
 				videohide:false,
 				photographText:'拍 照',
+				name:"",
+				username:"",
+				userphone:"",
+				company:"",
+				REMARKS:"",
+				PASSPORT:"",
 			}
 		},
 		methods: {
@@ -84,41 +91,78 @@
 					let ctx = this.$refs['canvas'].getContext('2d')
 					// 把当前视频帧内容渲染到canvas上
 					ctx.drawImage(this.$refs['video'], 0, 0, 800, 600)
-					// 转base64格式、图片格式转换、图片质量压缩
-					let imgBase64 = this.$refs['canvas'].toDataURL('image/jpeg', 0.7)
-					// 由字节转换为KB 判断大小
-					let str = imgBase64.replace('data:image/jpeg;base64,', '')
-					let strLength = str.length
-					let fileLength = parseInt(strLength - (strLength / 8) * 2)
-					// 图片尺寸  用于判断
-					let size = (fileLength / 1024).toFixed(2)
-					
-					this.headImgSrc = imgBase64;
-					// 上传拍照信息  调用接口上传图片 .........
-					
-					// 保存到本地
-					let ADOM = document.createElement('a')
-					ADOM.href = this.headImgSrc
-					ADOM.download = new Date().getTime() + '.jpeg'
-					ADOM.click()
 				}
 			},
-			// 关闭摄像头
+			// 上传照片,关闭摄像头
 			closeCamera() {
-				if (!this.$refs['video'].srcObject) return
-				let stream = this.$refs['video'].srcObject
-				let tracks = stream.getTracks()
-				tracks.forEach(track => {
-					track.stop()
-				})
-				this.$refs['video'].srcObject = null;
-				this.$router.push('/visitprint');
+				// 上传照片
+				// 转base64格式、图片格式转换、图片质量压缩
+				let imgBase64 = this.$refs['canvas'].toDataURL('image/jpeg', 0.7);
+				// 由字节转换为KB 判断大小
+				let str = imgBase64.replace('data:image/jpeg;base64,', '');
+				let strLength = str.length;
+				let fileLength = parseInt(strLength - (strLength / 8) * 2);
+				// 图片尺寸  用于判断
+				let size = (fileLength / 1024).toFixed(2);
+				console.log(size)
+				if(strLength<10000){
+					this.$message.error('请先完成拍照！');
+				}else{
+					// this.headImgSrc = imgBase64;
+					
+					// console.log(this.headImgSrc)
+					// 上传拍照信息  调用接口上传图片 .........
+					uploadImg({DATA:imgBase64,PASSPORT:this.PASSPORT}).then((data)=>{
+						if(data.msgType===0){
+							this.$message.success('上传成功');
+							// 关闭摄像头
+							if (!this.$refs['video'].srcObject) return
+							let stream = this.$refs['video'].srcObject
+							let tracks = stream.getTracks()
+							tracks.forEach(track => {
+								track.stop()
+							})
+							this.$refs['video'].srcObject = null;
+							this.dialogVisible = false;
+							
+							// 跳转至打印
+							this.$router.push('/visitprint');
+						}else{
+							this.$message.error('上传失败');
+						}
+					})
+					
+					
+					// 保存到本地
+					// let ADOM = document.createElement('a')
+					// ADOM.href = this.headImgSrc
+					// ADOM.download = new Date().getTime() + '.jpeg'
+					// ADOM.click()
+				}
 			},
 		},
 		components: {
 			Header,
 			TipsText,
 			LeftTitle
+		},
+		mounted(){
+			getfindByPassport().then((data)=>{
+				let {
+					NAME,
+					USER_NAME,
+					USER_PHONE,
+					COMPANY,
+					REMARKS,
+					PASSPORT
+				} = data.returnMsg;
+				this.name = NAME;
+				this.username = USER_NAME;
+				this.userphone = USER_PHONE;
+				this.company = COMPANY;
+				this.REMARKS = REMARKS;
+				this.PASSPORT = PASSPORT;
+			})
 		}
 	}
 </script>

@@ -14,7 +14,7 @@
 		<div class="footer">
 			<p>
 				<span>登记失败</span>需，
-				<button>重新预约</button>
+				<button @click="resetOrder">重新预约</button>
 			</p>
 			<p>Registration failure requires re appointment</p>
 		</div>
@@ -31,6 +31,11 @@
 		},
 		components: {
 			Header,
+		},
+		methods:{
+			resetOrder(){
+				this.$router.push('/visitcard');
+			}
 		}
 	}
 </script>
@@ -83,6 +88,7 @@
 					outline: none;
 					border: 0;
 					color: #fff;
+					cursor: pointer;
 				}
 			}
 			P:last-child{

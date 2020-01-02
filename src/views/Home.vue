@@ -65,7 +65,7 @@
 				.text-border{
 					width: 260px;
 					height: 85px;
-					margin: 464px auto 0;
+					margin: 50% auto 0;
 					font-size: 16px;
 					border:2px solid rgba(255,255,255,1);
 					cursor: pointer;
