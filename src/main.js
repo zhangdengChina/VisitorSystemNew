@@ -11,6 +11,8 @@ import "@/assets/fonts/iconfont.css"	// 字体
 
 import Print from 'vue-print-nb'	// 打印组件
 
+import store from './store'
+
 Vue.use(Print);
 
 Vue.use(ElementUI);
@@ -21,6 +23,7 @@ Vue.config.productionTip = false
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })

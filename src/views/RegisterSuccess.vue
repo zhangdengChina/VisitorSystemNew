@@ -27,21 +27,15 @@
 		},
 		methods:{
 			resetOrder(){
+				window.sessionStorage.removeItem('publicData');
 				this.$router.replace('/');
 			}
-		}
+		},
 	}
 </script>
 
 <style lang="less" scoped>
 	.registererr {
-		/deep/ .header {
-			.visitor {
-				.iconfont {
-					color: #8b8b8b;
-				}
-			}
-		}
 		.footer{
 			text-align: center;
 			margin-top: 60px;

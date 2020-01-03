@@ -34,7 +34,7 @@
 		},
 		methods:{
 			resetOrder(){
-				this.$router.push('/visitcard');
+				this.$router.replace('/visitcard');
 			}
 		}
 	}

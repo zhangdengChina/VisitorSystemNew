@@ -8,3 +8,6 @@ export const getfindNotice = params => req.get('/api/notice/findNotice', params)
 
 // 3. 上传照片接口
 export const uploadImg = params => req.post('/api/visitors/sendAndUp', params);
+
+//	4.发送邮件
+export const sendemail = params => req.post('/api/visitors/sendEmail', params);

@@ -1,9 +1,9 @@
 <template>
 	<div class="visitphoto">
 		<Header name="访客访问中" />
-		<TipsText :text="text" />
+		<!-- <TipsText :text="text" /> -->
 		<div class="content">
-<!-- 			<LeftTitle title="确认邮件" titleEnglish="Confirm Email" />
+			<!-- 			<LeftTitle title="确认邮件" titleEnglish="Confirm Email" />
 			<div class="email">
 				<div class="email-text">
 					<p>Dear({{name}} of 员工 )</p>
@@ -17,7 +17,7 @@
 			<!-- <hr /> -->
 			<LeftTitle title="访客拍照" titleEnglish="Visitors taking photos" />
 			<div class="photo-content">
-				<img :src="headImgSrc" class="photo" alt="头像"/>
+				<img :src="headImgSrc" class="photo" alt="头像" />
 				<div class="text">
 					<p>拍照要求：白底上身照片，五官清楚</p>
 					<p>Photo requirements: upper body photo with white background and clear facial features</p>
@@ -49,22 +49,25 @@
 	import Header from "@/components/Header.vue";
 	import TipsText from "@/components/TipsText.vue";
 	import LeftTitle from "@/components/LeftTitle.vue";
-	import {getfindByPassport,uploadImg} from "@/apis/apis.js";
+	import {
+		uploadImg
+	} from "@/apis/apis.js";
 	export default {
 		data() {
 			return {
-				text: "访客登记成功。访客确认邮件信息并拍照，拍照照片出入数据库。",
+				// text: "访客登记成功。访客确认邮件信息并拍照，拍照照片出入数据库。",
 				dialogVisible: false,
+				fullscreenLoading: true, // 等待框
 				headImgSrc: require('@/assets/images/photograph.png'),
-				canvashide:true,
-				videohide:false,
-				photographText:'拍 照',
-				name:"",
-				username:"",
-				userphone:"",
-				company:"",
-				REMARKS:"",
-				PASSPORT:"",
+				canvashide: true,
+				videohide: false,
+				photographText: '拍 照',
+				name: "",
+				username: "",
+				userphone: "",
+				company: "",
+				REMARKS: "",
+				PASSPORT: "",
 			}
 		},
 		methods: {
@@ -86,8 +89,8 @@
 			photograph() {
 				this.canvashide = !this.canvashide;
 				this.videohide = !this.videohide;
-				this.videohide?this.photographText="重 拍":this.photographText="拍 照";
-				if(this.photographText === '重 拍'){
+				this.videohide ? this.photographText = "重 拍" : this.photographText = "拍 照";
+				if (this.photographText === '重 拍') {
 					let ctx = this.$refs['canvas'].getContext('2d')
 					// 把当前视频帧内容渲染到canvas上
 					ctx.drawImage(this.$refs['video'], 0, 0, 800, 600)
@@ -104,16 +107,28 @@
 				let fileLength = parseInt(strLength - (strLength / 8) * 2);
 				// 图片尺寸  用于判断
 				let size = (fileLength / 1024).toFixed(2);
-				console.log(size)
-				if(strLength<10000){
+				if (strLength < 10000) {
 					this.$message.error('请先完成拍照！');
-				}else{
+				} else {
+					// 显示加载框
+					const loading = this.$loading({
+						lock: true,
+						text: 'Loading',
+						spinner: 'el-icon-loading',
+						background: 'rgba(0, 0, 0, 0.7)'
+					});
 					// this.headImgSrc = imgBase64;
-					
+
 					// console.log(this.headImgSrc)
 					// 上传拍照信息  调用接口上传图片 .........
-					uploadImg({DATA:imgBase64,PASSPORT:this.PASSPORT}).then((data)=>{
-						if(data.msgType===0){
+					let getdata = JSON.parse(window.sessionStorage.getItem('publicData'));
+					
+					uploadImg({
+						DATA: imgBase64,
+						PASSPORT: getdata.PASSPORT
+					}).then((data) => {
+						loading.close();
+						if (data.msgType === 0) {
 							this.$message.success('上传成功');
 							// 关闭摄像头
 							if (!this.$refs['video'].srcObject) return
@@ -124,15 +139,15 @@
 							})
 							this.$refs['video'].srcObject = null;
 							this.dialogVisible = false;
-							
+
 							// 跳转至打印
 							this.$router.push('/visitprint');
-						}else{
+						} else {
 							this.$message.error('上传失败');
 						}
 					})
-					
-					
+
+
 					// 保存到本地
 					// let ADOM = document.createElement('a')
 					// ADOM.href = this.headImgSrc
@@ -146,23 +161,23 @@
 			TipsText,
 			LeftTitle
 		},
-		mounted(){
-			getfindByPassport().then((data)=>{
-				let {
-					NAME,
-					USER_NAME,
-					USER_PHONE,
-					COMPANY,
-					REMARKS,
-					PASSPORT
-				} = data.returnMsg;
-				this.name = NAME;
-				this.username = USER_NAME;
-				this.userphone = USER_PHONE;
-				this.company = COMPANY;
-				this.REMARKS = REMARKS;
-				this.PASSPORT = PASSPORT;
-			})
+		mounted() {
+			// getfindByPassport().then((data) => {
+			// 	let {
+			// 		NAME,
+			// 		USER_NAME,
+			// 		USER_PHONE,
+			// 		COMPANY,
+			// 		REMARKS,
+			// 		PASSPORT
+			// 	} = data.returnMsg;
+			// 	this.name = NAME;
+			// 	this.username = USER_NAME;
+			// 	this.userphone = USER_PHONE;
+			// 	this.company = COMPANY;
+			// 	this.REMARKS = REMARKS;
+			// 	this.PASSPORT = PASSPORT;
+			// })
 		}
 	}
 </script>
@@ -272,13 +287,16 @@
 		/deep/ .el-dialog {
 			height: 50%;
 			background: 0;
-			.videohide{
+
+			.videohide {
 				display: none;
 			}
-			.canvashide{
+
+			.canvashide {
 				display: none;
 			}
-			.el-dialog__footer{
+
+			.el-dialog__footer {
 				display: flex;
 				justify-content: center;
 			}

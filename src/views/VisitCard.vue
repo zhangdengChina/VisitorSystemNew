@@ -136,15 +136,15 @@
 					</div>
 					<el-input :disabled="auto" v-model="visitCard.ID"></el-input>
 				</el-form-item>
-				<el-form-item prop="address">
+				<!-- <el-form-item prop="address">
 					<div class="labletext">
 						<p>地址</p>
 						<p>Address</p>
 					</div>
 					<el-input :disabled="auto" v-model="visitCard.address"></el-input>
-				</el-form-item>
+				</el-form-item> -->
 				<hr />
-				<el-form-item prop="selection">
+				<!-- <el-form-item prop="selection">
 					<div class="labletext">
 						<p>地区</p>
 						<p>Region Selection</p>
@@ -152,7 +152,7 @@
 					<el-select :disabled="auto" v-model="visitCard.selection" width="700">
 						<el-option label="{visitCard.selection}" value="{visitCard.selection}"></el-option>
 					</el-select>
-				</el-form-item>
+				</el-form-item> -->
 				<el-form-item prop="phone">
 					<div class="labletext">
 						<p>手机</p>
@@ -220,7 +220,6 @@
 				// 手动输入显示隐藏
 				manual: true,
 				placeholder: "身份证号",
-				idnum: "123",
 				// 表单
 				visitCard: {
 					// 事件信息
@@ -247,6 +246,7 @@
 				// http:"https://www.hemingbi.com/fangke/",
 				pdfUrl: "", // pdf文档路径
 				cardnumber: "",
+				publicData:{},
 			}
 		},
 		components: {
@@ -267,6 +267,21 @@
 			onSubmit() {
 				// 发起请求
 				if(this.visitCard.ID){
+					// 存入状态机
+					// this.$store.state.PASSPORT = this.visitCard.ID;
+					// this.$store.state.NAME = this.visitCard.name;
+					// this.$store.state.VISIT_DATE = this.visitCard.date;
+					// this.$store.state.TYPE = this.visitCard.type;
+					// 将公用信息存储
+					this.publicData={
+							PASSPORT:this.visitCard.ID,
+							NAME:this.visitCard.name,
+							VISIT_DATE:this.visitCard.date,
+							TYPE:this.visitCard.type
+						}
+					// 数据存入本地
+					window.sessionStorage.setItem('publicData',JSON.stringify(this.publicData))
+					
 					this.$router.push('/visitphoto')
 				}else{
 					this.$message.warning('请先读取证件信息！');
@@ -286,13 +301,16 @@
 				if (this.radio === 1 || this.radio === 2) {
 					this.$refs[formName].resetFields();
 					getfindByPassport().then((data) => {
-						if(data.msgType===-1)	this.$message.error('访客信息获取失败！')
+						if(data.msgType===-1){
+							// this.$message.error('访客信息获取失败！')
+							this.$router.replace('/registererror');
+						}
 						let {
 							VISIT_REASON, // 来访事由
 							VISIT_DATE, // 来访日期
 							VISIT_AREA, // 来访区域
 							TYPE, // 访客类型
-							USER_NAME, // 姓名	
+							NAME, // 姓名	
 							SEX, // 性别
 							PASSPORT, // 护照、身份证
 							// 地址
@@ -306,7 +324,7 @@
 						this.visitCard.type = TYPE;
 						TYPE === '短期访客' ? this.visitCard.typeEnglish = 'Short Term Visitors' : this.visitCard.typeEnglish =
 							'Temporary Visitor';
-						this.visitCard.name = USER_NAME;
+						this.visitCard.name = NAME;
 						this.visitCard.sex = SEX;
 						this.visitCard.ID = PASSPORT;
 						this.visitCard.phone = USER_PHONE;
@@ -318,13 +336,16 @@
 							PASSPORT: this.cardnumber
 						}).then((data) => {
 							// console.log(data)
-							if(data.msgType===-1) this.$message.error(data.returnMsg)
+							if(data.msgType===-1){
+								// this.$message.error('访客信息获取失败！')
+								this.$router.replace('/registererror');
+							}
 							let {
 								VISIT_REASON, // 来访事由
 								VISIT_DATE, // 来访日期
 								VISIT_AREA, // 来访区域
 								TYPE, // 访客类型
-								USER_NAME, // 姓名	
+								NAME, // 姓名	
 								SEX, // 性别
 								PASSPORT, // 护照、身份证
 								// 地址
@@ -338,7 +359,7 @@
 							this.visitCard.type = TYPE;
 							TYPE === '短期访客' ? this.visitCard.typeEnglish = 'Short Term Visitors' : this.visitCard.typeEnglish =
 								'Temporary Visitor';
-							this.visitCard.name = USER_NAME;
+							this.visitCard.name = NAME;
 							this.visitCard.sex = SEX;
 							this.visitCard.ID = PASSPORT;
 							this.visitCard.phone = USER_PHONE;
@@ -357,7 +378,7 @@
 				if (!this.checked) {
 					this.$message.error('请先勾选访客须知承诺！');
 				}else{
-					window.removeEventListener('scroll', this.handleScroll); //  离开页面清除（移除）滚轮滚动事件
+					window.removeEventListener('scroll', this.handleScroll,true); //  确认（移除）滚轮滚动事件
 				}
 			},
 			// 访客需知
@@ -372,13 +393,17 @@
 			},
 			// 监听滚动
 			handleScroll() {
-				// PDF滚动
+				// 监听PDF滚动
 				let scrollObj = document.getElementById('dialog-content-scroll'); // 滚动区域
-				let scrollTop = scrollObj.scrollTop; // div 到头部的距离
+				let scrollTop = scrollObj.scrollTop; //	滚动的距离
 				let scrollHeight = scrollObj.scrollHeight; // 滚动条的总高度
-				// 滚动条到底部的条件
-				if (scrollHeight - (scrollObj.offsetHeight - 2) === scrollTop) {
-					this.VisitorsChecked = false;
+				let boxHeight = scrollObj.offsetHeight; // 盒子高度
+				if(scrollTop){
+					// 滚动条到底部的条件
+					if (scrollTop+boxHeight-2 === scrollHeight) {
+						// 滚动的距离+盒子高度-2=滚动条的总高度
+						this.VisitorsChecked = false;
+					}
 				}
 			}
 		},
@@ -389,11 +414,9 @@
 			getfindNotice().then((data) => {
 				this.pdfUrl = data.returnMsg.NOTICEURL;
 			})
-			window.addEventListener('scroll', this.handleScroll, true); // 监听（绑定）滚轮滚动事件
+			// 启动监听事件
+			window.addEventListener('scroll', this.handleScroll,true); // 监听（绑定）滚轮滚动事件
 		},
-		destroyed() {
-			// window.removeEventListener('scroll', this.handleScroll); //  离开页面清除（移除）滚轮滚动事件
-		}
 	}
 </script>
 
