@@ -64,7 +64,7 @@
 				<div class="autoInput">
 					<p>将身份证/护照件置于读卡器，点击此按钮</p>
 					<p>Put the ID card in the card reader, click this button</p>
-					<button @click="papers('visitCard')">读取证件</button>
+					<button @click="papers('visitCard')">{{entertext}}</button>
 				</div>
 			</div>
 			<LeftTitle title="事件信息" titleEnglish="Event Info" />
@@ -220,6 +220,7 @@
 				// 手动输入显示隐藏
 				manual: true,
 				placeholder: "身份证号",
+				entertext:"读取证件",
 				// 表单
 				visitCard: {
 					// 事件信息
@@ -259,6 +260,7 @@
 			changeradio(e) {
 				e ? this.automatic = 1 : this.automatic = 0;
 				this.radio === 1 || this.radio === 2 ? this.manual = true : this.manual = false;
+				this.radio === 1||this.radio === 2?this.entertext = "读取证件":this.entertext = "确认"
 				this.manualradio === 5 ? this.placeholder = '护照号' : this.placeholder = '身份证号';
 				this.cardnumber = '';
 				this.$refs.visitCard.resetFields();
@@ -289,6 +291,7 @@
 			// 手动输入
 			manualInput() {
 				this.manual = false;
+				this.entertext = '确认';
 			},
 			// 读取证件
 			papers(formName) {
