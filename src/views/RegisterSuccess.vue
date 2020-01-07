@@ -27,10 +27,13 @@
 		},
 		methods:{
 			resetOrder(){
-				window.sessionStorage.removeItem('publicData');
 				this.$router.replace('/');
+				window.sessionStorage.removeItem('publicData');
 			}
 		},
+		mounted() {
+			// window.sessionStorage.removeItem('publicData');
+		}
 	}
 </script>
 

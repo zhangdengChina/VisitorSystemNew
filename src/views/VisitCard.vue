@@ -267,11 +267,6 @@
 			onSubmit() {
 				// 发起请求
 				if(this.visitCard.ID){
-					// 存入状态机
-					// this.$store.state.PASSPORT = this.visitCard.ID;
-					// this.$store.state.NAME = this.visitCard.name;
-					// this.$store.state.VISIT_DATE = this.visitCard.date;
-					// this.$store.state.TYPE = this.visitCard.type;
 					// 将公用信息存储
 					this.publicData={
 							PASSPORT:this.visitCard.ID,
@@ -302,7 +297,7 @@
 					this.$refs[formName].resetFields();
 					getfindByPassport().then((data) => {
 						if(data.msgType===-1){
-							// this.$message.error('访客信息获取失败！')
+							this.$message.error('证件读取失败！')
 							this.$router.replace('/registererror');
 						}
 						let {
@@ -335,9 +330,8 @@
 						getfindByPassport({
 							PASSPORT: this.cardnumber
 						}).then((data) => {
-							// console.log(data)
 							if(data.msgType===-1){
-								// this.$message.error('访客信息获取失败！')
+								this.$message.error('证件读取失败！')
 								this.$router.replace('/registererror');
 							}
 							let {

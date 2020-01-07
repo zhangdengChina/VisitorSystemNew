@@ -24,8 +24,13 @@
 		},
 		methods:{
 			goVisitCard(){
+				window.sessionStorage.setItem('data','token')
 				this.$router.push('/visitcard');
 			}
+		},
+		mounted() {
+			// 清除本地存储
+			window.sessionStorage.removeItem('publicData');
 		}
 	}
 </script>

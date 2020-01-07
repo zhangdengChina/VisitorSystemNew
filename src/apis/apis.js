@@ -11,3 +11,9 @@ export const uploadImg = params => req.post('/api/visitors/sendAndUp', params);
 
 //	4.发送邮件
 export const sendemail = params => req.post('/api/visitors/sendEmail', params);
+
+//	5.获取卡号绑定
+export const bindCard = params => req.post('/api/visitors/bindCard', params);
+
+//	6.连接发卡机
+export const sendCard = params => req.post('/api/accessCard/sendCard', params);

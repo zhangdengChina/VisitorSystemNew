@@ -3,7 +3,7 @@
 		<Header name="访客访问中" />
 		<TipsText :text="text" />
 		<div class="card-content">
-			<div class="card" id="printTest">
+			<div class="card" id="printTest" ref="print">
 				<div class="img">
 					<img src="../assets/images/headerLogo1.png" width="108" height="62" />
 				</div>
@@ -15,15 +15,16 @@
 				</div>
 			</div>
 			<div class="btn">
-				<button @click="hairpin">1.点击发卡</button>
-				<button v-print="'#printTest'" @click="printCard" :disabled="disabled" :class="{disabled:disabled}">2.打印卡贴</button>
+				<!-- <button @click="hairpin" :disabled="swipe" :class="{disabled:swipe}">1.点击发卡</button> -->
+				<!-- <button v-print="'#printTest'" @click="printCard" :disabled="disabled" :class="{disabled:disabled}">2.打印卡贴</button> -->
+				<button @click="printCard" :disabled="disabled" :class="{disabled:disabled}">2.打印卡贴</button>
 			</div>
 		</div>
 		<el-dialog title="员工刷卡/Employees swipe card" :visible.sync="centerDialogVisible" width="30%" :close-on-click-modal="false"
 		 :close-on-press-escape="false" :show-close="false" :width="'500px'" center>
 			<p>请将您的员工卡放在读卡器上，以下输入框（卡号以“*”显示）显示卡号输入后，点击“确认按钮”.</p>
 			<p>Please place your badge on the card reader. Click on ‘Confirm’ Button when the card No. shows on the screen.</p>
-			<input type="password" v-model="swipedata" autofocus="autofocus" />
+			<input type="password" v-model="swipedata" ref="cxk" @blur="changeinput"/>
 			<span slot="footer" class="dialog-footer">
 				<el-button type="primary" @click="Determine">确 定</el-button>
 				<el-button @click="centerDialogVisible = false">取 消</el-button>
@@ -35,22 +36,23 @@
 <script>
 	import Header from "@/components/Header.vue";
 	import TipsText from "@/components/TipsText.vue";
-	import {sendemail} from "@/apis/apis.js";
-	import axios from 'axios';
-	import qs from 'qs';
+	import {
+		sendemail,
+		bindCard,
+		sendCard
+	} from "@/apis/apis.js";
 	export default {
 		data() {
 			return {
 				text: "访客登记拍照成功。打印卡贴。",
 				centerDialogVisible: false,
 				disabled: true, //禁用按钮
+				swipe: true,
 				swipedata: "", //刷卡数据
-				code: 0, // 刷卡状态
 				NAME: "",
 				VISIT_DATE: "",
 				TYPE: "",
-				PASSPORT:"",
-				http: "http://localhost:5000"
+				PASSPORT: ""
 			}
 		},
 		components: {
@@ -60,94 +62,104 @@
 		methods: {
 			// 点击打印
 			printCard() {
-				// this.$router.replace('/registersuccess');
-				// console.log( this.$router)
 				// 发送邮件
-				sendemail({PASSPORT:this.PASSPORT})
+				sendemail({
+					PASSPORT: this.PASSPORT
+				})
+				this.$print(this.$refs.print) // 使用打印
 			},
 			// 发卡
-			hairpin() {
-				// 显示刷卡框
-				this.centerDialogVisible = true;
-				// 启动刷卡机
-				axios.put(this.http + '/api/TYCD1500RF/Port', {
-					"port": "COM1",
-					"buildCommDCB": "9600"
-				}).then(data => {
-					if (data.code === 0) {
-						this.$message.success('连接成功！');
-						// 获取状态
-						axios.get(this.http + '/api/TYCD1500RF/Status').
-						then(data1 => {
-							if (data1.code === 0) {
-								this.$message.success('连接正常！');
-								// 卡片操作
-								axios.post(this.http+`/api/TYCD1500RF/Card/{${data.data}}`).
-								then(data2=>{
-									if(data.code===0){
-										this.$message.success('操作成功！');
-										console.log('卡片操作',data2.data)
-									}else{
-										this.$message.error('操作失败！');
-									}
-								}).catch(err=>{
-									this.$message.error('操作失败！');
-								})
-							} else {
-								this.$message.error('error！');
-							}
-						}).catch(err => {
-							this.$message.error('error！');
-						})
-					} else {
-						this.$message.error('连接失败！');
-					}
-				}).catch(err => {
-					this.$message.error('连接失败！');
-				})
-				// 
-			},
+			// hairpin() {
+			// 	// 显示刷卡框
+			// 	this.centerDialogVisible = true;
+			// 	this.swipedata = "";
+			// 	// 自动聚焦input
+			// 	this.$nextTick(() => {
+			// 		this.$refs.cxk.focsus();
+			// 	});
+			// },
 			// 发卡确认
 			Determine() {
 				if (!this.swipedata) {
 					this.$message.error("请先刷员工卡 Please swipe Employee's card first")
 				} else {
-					// 连接刷卡机
-					//发卡到读卡位
-					if (this.code == 0) {
-						// var i = 0;
-						// var flag = recursiveReadCard(i);
-
-						// 取消打印禁用
-						this.disabled = false;
-						// 隐藏模态框
-						// this.centerDialogVisible = false;
-					} else {
-						this.$message.error("连接发卡机失败 Failed to connect to the card machine");
-						return;
-					}
+					// 发送请求
+					bindCard({
+						PASSPORT: this.PASSPORT,
+						CARD_NUMBER: this.swipedata
+					}).then(data => {
+						// console.log(data)
+						if (data.msgType === -1) {
+							this.$message.error("卡号关联失败！")
+						}
+					}).catch(err=>{
+						this.$message.error("卡号关联失败！")
+					})
+					// 取消打印禁用
+					this.disabled = false;
+					// 隐藏刷卡框
+					this.centerDialogVisible = false;
+				}
+			},
+			// 失焦事件
+			changeinput(){
+				if (!this.swipedata) {
+					this.$message.error("请先刷员工卡 Please swipe Employee's card first")
+				} else {
+					// 发送请求
+					bindCard({
+						PASSPORT: this.PASSPORT,
+						CARD_NUMBER: this.swipedata
+					}).then(data => {
+						// console.log(data)
+						if (data.msgType === -1) {
+							this.$message.error("卡号关联失败！")
+						}
+					}).catch(err=>{
+						this.$message.error("卡号关联失败！")
+					})
+					// 取消打印禁用
+					this.disabled = false;
+					// 隐藏刷卡框
+					this.centerDialogVisible = false;
 				}
 			}
 		},
 		mounted() {
+			// 本地获取数据
 			let getdata = JSON.parse(window.sessionStorage.getItem('publicData'));
 			this.NAME = getdata.NAME;
 			this.VISIT_DATE = getdata.VISIT_DATE;
 			this.TYPE = getdata.TYPE;
 			this.PASSPORT = getdata.PASSPORT;
+			// 延时3ms
+			// setTimeout(() => {
+				// this.swipe = false;
+				this.centerDialogVisible = true;
+				this.swipedata = "";
+				// 自动聚焦input
+				this.$nextTick(() => {
+					this.$refs.cxk.focus();
+				});
+			// }, 6000)
+
+			// 连接发卡机
+			sendCard().then(data => {
+				if (data.msgType === -1) {
+					this.$message.error("发卡机连接失败！")
+				}
+			}).catch(data=>{
+				this.$message.error("发卡机连接失败！")
+			})
 		}
 	}
 </script>
 
 <style lang="less" scoped>
 	@media print {
-		// @page {
-		//       margin: 15mm; /* this affects the margin in the printer settings */
-		//  }
 		#printTest {
-			margin-left: 100px;
 			width: 506px;
-			height: 334px;
+			height: 314px;
 			background: rgba(255, 255, 255, 1);
 			box-shadow: 0px 0px 14px 0px rgba(190, 190, 190, 0.58);
 			border-radius: 10px;
@@ -159,12 +171,12 @@
 			}
 
 			.content {
-				height: 238px;
+				height: 218px;
 				background-color: #F1F1F1 !important;
 				-webkit-print-color-adjust: exact;
 				font-size: 22px;
 				color: #333333;
-				padding: 25px 0 30px 93px;
+				padding: 25px 0 30px 140px;
 
 				p {
 					margin-bottom: 25px;
@@ -198,7 +210,7 @@
 					background: #F1F1F1;
 					font-size: 22px;
 					color: #333333;
-					padding: 25px 0 30px 93px;
+					padding: 25px 0 30px 140px;
 
 					p {
 						margin-bottom: 25px;

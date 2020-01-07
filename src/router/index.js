@@ -11,11 +11,11 @@ export default new Router({
       name: '首页',
       component: Home
     },
-    {
-    	  path: '/personnelcard',
-    	  name: '员工刷卡',
-    	  component: () => import('../views/PersonnelCard.vue'),
-    },
+    // {
+    // 	  path: '/personnelcard',
+    // 	  name: '员工刷卡',
+    // 	  component: () => import('../views/PersonnelCard.vue'),
+    // },
     {
     	  path: '/registererror',
     	  name: '登记失败',

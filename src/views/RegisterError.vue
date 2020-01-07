@@ -4,13 +4,13 @@
 		<div class="title">
 			<img src="../assets/images/registererr.png" />
 		</div>
-		<div class="tipstext">
+<!-- 		<div class="tipstext">
 			<p class="p1">您可能出现问题</p>
 			<p>1、登记过登记过登记过登记过登记过登记过登记过登记过登记过</p>
 			<p>1、登记过登记过登记过登记过登记过登记过登记过登记过登记过</p>
 			<p>1、登记过登记过登记过登记过登记过登记过登记过登记过登记过</p>
 			<p>1、登记过登记过登记过登记过登记过登记过登记过登记过登记过</p>
-		</div>
+		</div> -->
 		<div class="footer">
 			<p>
 				<span>登记失败</span>需，
