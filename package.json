@@ -15,7 +15,8 @@
     "qs": "^6.9.1",
     "vue": "^2.5.2",
     "vue-pdf": "^4.0.7",
-    "vue-router": "^3.0.1"
+    "vue-router": "^3.0.1",
+    "vue-touch-keyboard": "^0.3.2"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

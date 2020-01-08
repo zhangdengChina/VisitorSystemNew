@@ -7018,6 +7018,13 @@ vue-template-es2015-compiler@^1.6.0:
   resolved "https://registry.npm.taobao.org/vue-template-es2015-compiler/download/vue-template-es2015-compiler-1.9.1.tgz#1ee3bc9a16ecbf5118be334bb15f9c46f82f5825"
   integrity sha1-HuO8mhbsv1EYvjNLsV+cRvgvWCU=
 
+vue-touch-keyboard@^0.3.2:
+  version "0.3.2"
+  resolved "https://registry.npm.taobao.org/vue-touch-keyboard/download/vue-touch-keyboard-0.3.2.tgz#b005cddf1fc2f0f7f0137cc3201a998a4ba2a749"
+  integrity sha1-sAXN3x/C8PfwE3zDIBqZikuip0k=
+  dependencies:
+    babel-runtime "^6.26.0"
+
 vue@^2.5.2:
   version "2.6.11"
   resolved "https://registry.npm.taobao.org/vue/download/vue-2.6.11.tgz#76594d877d4b12234406e84e35275c6d514125c5"

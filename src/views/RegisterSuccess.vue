@@ -1,6 +1,6 @@
 <template>
 	<div class="registererr">
-		<Header name="访客访问中" />
+		<Header name="访客登记中" />
 		<TipsText :text="text"/>
 		<div class="footer">
 			<p>
@@ -45,8 +45,8 @@
 			P:first-child{
 				font-size: 16px;
 				span{
-					color: #00FF00;
-					font-weight:bold;
+					// color: #00FF00;
+					// font-weight:bold;
 				}
 				button{
 					width:120px;

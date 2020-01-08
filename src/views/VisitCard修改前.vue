@@ -57,8 +57,7 @@
 							护&emsp;照:<el-radio v-model="manualradio" :label="5" @change="changeradio"></el-radio>
 						</p>
 						<p>
-							<el-input :placeholder="'请输入'+placeholder" v-model="cardnumber" ref="cxkone" @focus="show" data-layout="normal"></el-input>
-							<vue-touch-keyboard :options="options" v-if="visible" :layout="layout" :cancel="hide" :accept="accept" :input="input" />
+							<el-input :placeholder="'请输入'+placeholder" v-model="cardnumber" ref="cxkone"></el-input>
 						</p>
 					</div>
 				</div>
@@ -68,98 +67,132 @@
 					<button @click="papers('visitCard')">{{entertext}}</button>
 				</div>
 			</div>
+			<LeftTitle title="事件信息" titleEnglish="Event Info" />
 			<el-form ref="visitCard" :model="visitCard" label-width="80px">
-				<div class="visitcardcontent">
-					<div class="visitcardleft">
-						<LeftTitle title="自动识别身份" titleEnglish="Automatic Identification" />
-						<div class="visitors">
-							<p>来访人员信息类型：{{visitCard.type}}</p>
-							<p>Visitor Info: {{visitCard.typeEnglish}}</p>
-						</div>
-						<el-form-item prop="name">
-							<div class="labletext">
-								<p>姓名</p>
-								<p>Name</p>
-							</div>
-							<el-input :disabled="auto" v-model="visitCard.name"></el-input>
-						</el-form-item>
-						<el-form-item prop="sex">
-							<div class="labletext">
-								<p>性别</p>
-								<p>Sex</p>
-							</div>
-							<el-input :disabled="auto" v-model="visitCard.sex"></el-input>
-						</el-form-item>
-						<el-form-item prop="ID">
-							<div class="labletext">
-								<p>身份证/护照</p>
-								<p>ID</p>
-							</div>
-							<el-input :disabled="auto" v-model="visitCard.ID"></el-input>
-						</el-form-item>
-						<el-form-item prop="phone">
-							<div class="labletext">
-								<p>手机</p>
-								<p>Mobile Phone Number</p>
-							</div>
-							<el-input :disabled="auto" v-model="visitCard.phone"></el-input>
-						</el-form-item>
-						<el-form-item prop="company">
-							<div class="labletext">
-								<p>公司</p>
-								<p>Company</p>
-							</div>
-							<el-input :disabled="auto" v-model="visitCard.company"></el-input>
-						</el-form-item>
+				<!-- <el-form-item prop="purpose">
+					<div class="labletext">
+						<p>来访事由</p>
+						<p>Purpose</p>
 					</div>
-					<div class="visitcardright">
-						<LeftTitle title="事件信息" titleEnglish="Event Info" />
-						<el-form-item prop="purpose" class="purpose">
-							<div class="labletext">
-								<p>来访事由</p>
-								<p>Purpose</p>
-							</div>
-							<el-input :disabled="auto" v-model="visitCard.purpose"></el-input>
-						</el-form-item>
-						<el-form-item prop="date">
-							<div class="labletext">
-								<p>来访日期</p>
-								<p>Date</p>
-							</div>
-							<el-input :disabled="auto" v-model="visitCard.date"></el-input>
-						</el-form-item>
-						<el-form-item prop="area">
-							<div class="labletext">
-								<p>来访区域</p>
-								<p>Area</p>
-							</div>
-							<el-input :disabled="auto" v-model="visitCard.area"></el-input>
-						</el-form-item>
-						<el-form-item prop="type">
-							<div class="labletext">
-								<p>访客类型</p>
-								<p>Type</p>
-							</div>
-							<el-input :disabled="auto" v-model="visitCard.type"></el-input>
-						</el-form-item>
-						<!-- 				<el-form-item>
-							<div class="labletext">
-								<p>访客验证单号</p>
-								<p>Visitor verification no.</p>
-							</div>
-							<el-input v-model="visitCard.verification"></el-input>
-						</el-form-item> -->
-						<!-- <hr /> -->
-					
+					<el-select :disabled="auto" v-model="visitCard.purpose" width="700">
+						<el-option label="{visitCard.purpose}" value="{visitCard.purpose}"></el-option>
+					</el-select>
+				</el-form-item> -->
+				<!-- <el-form-item prop="date">
+					<div class="labletext">
+						<p>来访日期</p>
+						<p>Date</p>
 					</div>
+					<el-date-picker :disabled="auto" v-model="visitCard.date" type="date" placeholder="选择日期">
+					</el-date-picker>
+				</el-form-item> -->
+				<el-form-item prop="purpose">
+					<div class="labletext">
+						<p>来访事由</p>
+						<p>Purpose</p>
+					</div>
+					<el-input :disabled="auto" v-model="visitCard.purpose"></el-input>
+				</el-form-item>
+				<el-form-item prop="date">
+					<div class="labletext">
+						<p>来访日期</p>
+						<p>Date</p>
+					</div>
+					<el-input :disabled="auto" v-model="visitCard.date"></el-input>
+				</el-form-item>
+				<el-form-item prop="area">
+					<div class="labletext">
+						<p>来访区域</p>
+						<p>Area</p>
+					</div>
+					<el-input :disabled="auto" v-model="visitCard.area"></el-input>
+				</el-form-item>
+<!-- 				<el-form-item prop="type">
+					<div class="labletext">
+						<p>访客类型</p>
+						<p>Type</p>
+					</div>
+					<el-select :disabled="auto" v-model="visitCard.type" width="700">
+						<el-option label="{visitCard.type}" value="{visitCard.type}"></el-option>
+					</el-select>
+				</el-form-item> -->
+				<el-form-item prop="type">
+					<div class="labletext">
+						<p>访客类型</p>
+						<p>Type</p>
+					</div>
+					<el-input :disabled="auto" v-model="visitCard.type"></el-input>
+				</el-form-item>
+				<!-- 				<el-form-item>
+					<div class="labletext">
+						<p>访客验证单号</p>
+						<p>Visitor verification no.</p>
+					</div>
+					<el-input v-model="visitCard.verification"></el-input>
+				</el-form-item> -->
+				<!-- <hr /> -->
+				<LeftTitle title="自动识别身份" titleEnglish="Automatic Identification" />
+				<div class="visitors">
+					<p>来访人员信息类型：{{visitCard.type}}</p>
+					<p>Visitor Info: {{visitCard.typeEnglish}}</p>
 				</div>
-				<div class="visitcardfooter">
-					<el-form-item>
-						<el-button type="primary" @click="onSubmit" style="margin: auto;">确定</el-button>
-						<!-- <el-button @click="resetForm('visitCard')">重置</el-button> -->
-						<!-- <el-button>帮助</el-button> -->
-					</el-form-item>
-				</div>
+				<el-form-item prop="name">
+					<div class="labletext">
+						<p>姓名</p>
+						<p>Name</p>
+					</div>
+					<el-input :disabled="auto" v-model="visitCard.name"></el-input>
+				</el-form-item>
+				<el-form-item prop="sex">
+					<div class="labletext">
+						<p>性别</p>
+						<p>Sex</p>
+					</div>
+					<el-input :disabled="auto" v-model="visitCard.sex"></el-input>
+				</el-form-item>
+				<el-form-item prop="ID">
+					<div class="labletext">
+						<p>身份证/护照</p>
+						<p>ID</p>
+					</div>
+					<el-input :disabled="auto" v-model="visitCard.ID"></el-input>
+				</el-form-item>
+				<!-- <el-form-item prop="address">
+					<div class="labletext">
+						<p>地址</p>
+						<p>Address</p>
+					</div>
+					<el-input :disabled="auto" v-model="visitCard.address"></el-input>
+				</el-form-item> -->
+				<!-- <hr /> -->
+				<!-- <el-form-item prop="selection">
+					<div class="labletext">
+						<p>地区</p>
+						<p>Region Selection</p>
+					</div>
+					<el-select :disabled="auto" v-model="visitCard.selection" width="700">
+						<el-option label="{visitCard.selection}" value="{visitCard.selection}"></el-option>
+					</el-select>
+				</el-form-item> -->
+				<el-form-item prop="phone">
+					<div class="labletext">
+						<p>手机</p>
+						<p>Mobile Phone Number</p>
+					</div>
+					<el-input :disabled="auto" v-model="visitCard.phone"></el-input>
+				</el-form-item>
+				<el-form-item prop="company">
+					<div class="labletext">
+						<p>公司</p>
+						<p>Company</p>
+					</div>
+					<el-input :disabled="auto" v-model="visitCard.company"></el-input>
+				</el-form-item>
+				<el-form-item>
+					<el-button type="primary" @click="onSubmit" style="margin: auto;">确定</el-button>
+					<!-- <el-button @click="resetForm('visitCard')">重置</el-button> -->
+					<!-- <el-button>帮助</el-button> -->
+				</el-form-item>
 			</el-form>
 		</div>
 		<!-- 阅读须知模态框 -->
@@ -238,16 +271,6 @@
 				pdfUrl: "", // pdf文档路径
 				cardnumber: "",
 				publicData: {},
-				
-				// 虚拟键盘
-				visible: false,
-				layout: "normal",
-				input: null,
-				options: {
-					useKbEvents: false,
-					preventClickEvent: false
-				},
-				//	 
 			}
 		},
 		components: {
@@ -264,7 +287,7 @@
 				this.manualradio === 5 ? this.placeholder = '护照号' : this.placeholder = '身份证号';
 				this.cardnumber = '';
 				this.$refs.visitCard.resetFields();
-				if (e === 4 || e === 5) {
+				if(e===4 || e===5){
 					// 自动聚焦input
 					this.$nextTick(() => {
 						this.$refs['cxkone'].focus();
@@ -308,8 +331,6 @@
 			},
 			// 读取证件
 			papers(formName) {
-				// 隐藏键盘
-				this.visible = false;
 				this.automatic = 2;
 				if (this.radio === 1) {
 					this.$refs[formName].resetFields();
@@ -465,24 +486,6 @@
 						this.VisitorsChecked = false;
 					}
 				}
-			},
-		
-			// 虚拟键盘
-			accept(text) {
-				// alert("Input text: " + text);
-				this.hide();
-			},
-			
-			show(e) {
-				this.input = e.target;
-				this.layout = e.target.dataset.layout;
-			
-				if (!this.visible)
-					this.visible = true
-			},
-			
-			hide() {
-				this.visible = false;
 			}
 		},
 		mounted() {
@@ -494,7 +497,7 @@
 			})
 			// 启动监听事件
 			window.addEventListener('scroll', this.handleScroll, true); // 监听（绑定）滚轮滚动事件
-
+			
 			this.$nextTick(() => {
 				this.$refs.cxkone.focus();
 			});
@@ -574,7 +577,6 @@
 				display: flex;
 				margin-top: 30px;
 				width: 1300px;
-				position: relative;
 
 				.autoInput {
 					display: flex;
@@ -605,6 +607,7 @@
 
 					p {
 						margin-top: 15px;
+
 						/deep/.el-radio__inner {
 							width: 20px;
 							height: 20px;
@@ -613,14 +616,6 @@
 						/deep/ .el-radio__inner::after {
 							width: 10px;
 							height: 10px;
-						}
-						.vue-touch-keyboard{
-							position: absolute;
-							z-index: 1000;
-							width: 1000px;
-							top: 180px;
-							left: 170px;
-							
 						}
 					}
 
@@ -665,43 +660,36 @@
 			}
 
 			.el-form {
-				width: 1200px;
-					// 后期修改
-					.visitcardcontent{
-						display: flex;
-						.visitcardleft{
-							width: 50%;
-						}
-						.visitcardright{
-							width: 50%;
-							.purpose{
-								margin-top: 78px;
-							}
-							.labletext {
-								width: 80px !important;
-							}
-						}
-					}
+				width: 1000px;
+
 				/deep/.el-form-item {
-					margin-bottom: 15px;
-					/deep/ .el-input{
-						width: 300px;
-					}
+					//测试
+					// width: 500px;
+					// .el-input__inner{
+					// 	width: 350px;
+					// }
+					// .el-form-item__content{
+					// 	margin: 0;
+					// }
+					// .el-select{
+					// 	width: 350px;
+					// }
+					// .el-input{
+					// 	width: 350px;
+					// }
+					//
 					.el-form-item__content {
-						line-height: 20px;
 						width: 100%;
 						display: flex;
-						margin-left: 0 !important;
 
 						.labletext {
-							width: 175px;
+							width: 180px;
 							text-align: right;
 							margin-right: 30px;
-							white-space: nowrap;
 
 							p {
-								height: 20px;
-								font-size: 14px;
+								height: 25px;
+								font-size: 16px;
 							}
 
 							p:first-child {
@@ -743,7 +731,7 @@
 				}
 
 				/deep/.el-form-item:last-child {
-
+					margin: 100px 0;
 
 					button {
 						margin-left: 40px;
@@ -792,22 +780,21 @@
 				display: none;
 			}
 
-			// /deep/ .el-input {
-			// 	width: 700px;
-			// }
+			/deep/ .el-input {
+				width: 700px;
+			}
 
-			// /deep/ .el-form .el-select {
-			// 	width: 700px;
-			// }
+			/deep/ .el-form .el-select {
+				width: 700px;
+			}
 
 			/deep/ .el-input__inner {
-				height: 40px;
+				height: 55px;
 			}
 
 			.visitors {
-				width: 600px;
-				margin: 20px auto 20px;
-				text-indent: 140px;
+				width: 300px;
+				margin: 40px 0 30px 210px;
 			}
 
 			hr {

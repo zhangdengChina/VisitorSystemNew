@@ -1,6 +1,6 @@
 <template>
 	<div class="visitphoto">
-		<Header name="访客访问中" />
+		<Header name="访客登记中" />
 		<!-- <TipsText :text="text" /> -->
 		<div class="content">
 			<!-- 			<LeftTitle title="确认邮件" titleEnglish="Confirm Email" />

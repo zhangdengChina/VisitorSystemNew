@@ -1,6 +1,6 @@
 <template>
 	<div class="PersonnelCard">
-		<Header name="访客访问中" />
+		<Header name="访客登记中" />
 		<div class="content">
 			<LeftTitle title="访客信息" titleEnglish="Visitor Information" />
 			<div class="content-search">

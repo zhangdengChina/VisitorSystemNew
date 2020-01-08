@@ -14,6 +14,14 @@ import "@/assets/fonts/iconfont.css" // 字体
 // import Print from 'vue-print-nb'	// 打印组件
 import Print from "@/utils/print";
 
+// 超时js
+import './utils/timeout.js'
+
+// 引入键盘
+import VueTouchKeyboard from "vue-touch-keyboard";
+import style from "vue-touch-keyboard/dist/vue-touch-keyboard.css"; // load default style
+Vue.use(VueTouchKeyboard);
+
 Vue.use(Print);
 
 Vue.use(ElementUI);

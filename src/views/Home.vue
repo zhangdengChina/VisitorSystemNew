@@ -4,6 +4,7 @@
 		<div class="right">
 			<div class="right-top">
 				<img src="../assets/images/logo.png"/>
+				<p class="logtitle">福建奔驰</p>
 				<p class="p1">访客管理系统</p>
 				<p class="p2">Visitor Management System</p>
 				<div class="text-border" @click="goVisitCard">
@@ -31,6 +32,8 @@
 		mounted() {
 			// 清除本地存储
 			window.sessionStorage.removeItem('publicData');
+			// 清除延时器
+			window.localStorage.removeItem("lastTime");
 		}
 	}
 </script>
@@ -55,7 +58,7 @@
 					margin: auto;
 				}
 				.p1{
-					margin: 20px auto 0;
+					margin: auto;
 					font-size:36px;
 					width: 250px;
 					text-align-last: justify;
@@ -66,6 +69,12 @@
 					margin:auto;
 					font-size:18px;
 					text-align-last: justify;
+				}
+				.logtitle{
+					margin-top: 20px;
+					font-size:36px;
+					text-align: center;
+					letter-spacing:5px;
 				}
 				.text-border{
 					width: 260px;
