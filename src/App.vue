@@ -5,7 +5,7 @@
 </template>
 
 
-<style>
+<style lang="less">
 	#app{
 		height: 100%;
 	}

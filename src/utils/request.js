@@ -6,9 +6,12 @@ import qs from 'qs';
 // 上线地址
 // axios.defaults.baseURL = 'https://www.hemingbi.com/fangke';
 // 测试地址
-axios.defaults.baseURL = 'http://192.168.99.22:8081';
+// axios.defaults.baseURL = 'http://192.168.99.22:8081';
 // 测试
 // axios.defaults.baseURL = 'http://127.0.0.1:8080/fangke/';
+axios.defaults.baseURL = 'http://192.168.2.115:8081';
+
+
 
 // 导出两个方法
 export default {

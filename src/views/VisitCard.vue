@@ -314,9 +314,11 @@
 				if (this.radio === 1) {
 					this.$refs[formName].resetFields();
 					getfindByPassport().then((data) => {
-						if (data.msgType === -1) {
-							this.$message.error('身份证读取失败或未预约！')
+						if (data.returnMsg === 2) {
+							this.$message.error("未查询到该记录")
 							this.$router.replace('/registererror');
+						}else if(data.returnMsg === 3){
+							this.$message.error("没有获取到证件号码，请重新放置证件!")
 						}
 						let {
 							VISIT_REASON, // 来访事由
@@ -338,8 +340,13 @@
 						this.visitCard.date = VISIT_DATE;
 						this.visitCard.area = VISIT_AREA;
 						this.visitCard.type = TYPE;
-						TYPE === '短期访客' ? this.visitCard.typeEnglish = 'Short Term Visitors' : this.visitCard.typeEnglish =
-							'Temporary Visitor';
+						if(TYPE === '短期访客'){
+							this.visitCard.typeEnglish = 'Short Term Visitors'
+						}else if(TYPE === '临时访客'){
+							this.visitCard.typeEnglish = 'Temporary Visitor'
+						}
+						// TYPE === '短期访客' ? this.visitCard.typeEnglish = 'Short Term Visitors' : this.visitCard.typeEnglish =
+						// 	'Temporary Visitor';
 						this.visitCard.name = NAME;
 						this.visitCard.sex = SEX;
 						this.visitCard.ID = PASSPORT;
@@ -351,9 +358,11 @@
 				} else if (this.radio === 2) {
 					this.$refs[formName].resetFields();
 					getfindByPassport().then((data) => {
-						if (data.msgType === -1) {
-							this.$message.error('护照读取失败或未预约！')
+						if (data.returnMsg === 2) {
+							this.$message.error("未查询到该记录")
 							this.$router.replace('/registererror');
+						}else if(data.returnMsg === 3){
+							this.$message.error("没有获取到证件号码，请重新放置证件!")
 						}
 						let {
 							VISIT_REASON, // 来访事由
@@ -375,8 +384,13 @@
 						this.visitCard.date = VISIT_DATE;
 						this.visitCard.area = VISIT_AREA;
 						this.visitCard.type = TYPE;
-						TYPE === '短期访客' ? this.visitCard.typeEnglish = 'Short Term Visitors' : this.visitCard.typeEnglish =
-							'Temporary Visitor';
+						if(TYPE === '短期访客'){
+							this.visitCard.typeEnglish = 'Short Term Visitors'
+						}else if(TYPE === '临时访客'){
+							this.visitCard.typeEnglish = 'Temporary Visitor'
+						}
+						// TYPE === '短期访客' ? this.visitCard.typeEnglish = 'Short Term Visitors' : this.visitCard.typeEnglish =
+						// 	'Temporary Visitor';
 						this.visitCard.name = NAME;
 						this.visitCard.sex = SEX;
 						this.visitCard.ID = PASSPORT;
@@ -390,9 +404,8 @@
 						getfindByPassport({
 							PASSPORT: this.cardnumber
 						}).then((data) => {
-							console.log(data)
-							if (data.msgType === -1) {
-								this.$message.error('证件读取失败！')
+							if (data.returnMsg === 3) {
+								this.$message.error("未查询到该记录")
 								this.$router.replace('/registererror');
 							}
 							let {
@@ -415,8 +428,13 @@
 							this.visitCard.date = VISIT_DATE;
 							this.visitCard.area = VISIT_AREA;
 							this.visitCard.type = TYPE;
-							TYPE === '短期访客' ? this.visitCard.typeEnglish = 'Short Term Visitors' : this.visitCard.typeEnglish =
-								'Temporary Visitor';
+							if(TYPE === '短期访客'){
+								this.visitCard.typeEnglish = 'Short Term Visitors'
+							}else if(TYPE === '临时访客'){
+								this.visitCard.typeEnglish = 'Temporary Visitor'
+							}	
+							// TYPE === '短期访客' ? this.visitCard.typeEnglish = 'Short Term Visitors' : this.visitCard.typeEnglish =
+							// 	'Temporary Visitor';
 							this.visitCard.name = NAME;
 							this.visitCard.sex = SEX;
 							this.visitCard.ID = PASSPORT;
@@ -431,9 +449,9 @@
 				} else {
 					this.$message.error('请先选择读取类型！');
 				}
-			},
+			},	
 			// 访客须知确认
-			confirm() {
+			confirm() {	
 				this.checked ? this.centerDialogVisible = false : this.centerDialogVisible = true;
 				if (!this.checked) {
 					this.$message.error('请先勾选访客须知承诺！');
@@ -617,9 +635,9 @@
 						.vue-touch-keyboard{
 							position: absolute;
 							z-index: 1000;
-							width: 1000px;
+							width: 100%;
 							top: 180px;
-							left: 170px;
+							left: 0;
 							
 						}
 					}
