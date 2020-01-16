@@ -30,7 +30,7 @@
 			 -->
 			<p>您的申请已成功，现在发放访客卡，请核对访客信息。</p>
 			<p>Your application has been successful. Now we will issue the visitor card. Please check the visitor information.</p>
-			<input type="text" v-model="swipedata" ref="cxk" />
+			<input type="text" v-model="swipedata" ref="cxk" :maxlength="9"/>
 			<p class="warning">注意：请读到卡号后再取卡</p>
 			<span slot="footer" class="dialog-footer">
 				<el-button type="primary" @click="Determine">确 定</el-button>

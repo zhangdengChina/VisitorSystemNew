@@ -319,6 +319,10 @@
 							this.$router.replace('/registererror');
 						}else if(data.returnMsg === 3){
 							this.$message.error("没有获取到证件号码，请重新放置证件!")
+						}else if(data.returnMsg === 4){
+							this.$message.warning("超时访问，请重新预约!")
+						}else if(data.returnMsg === 5){
+							this.$message.warning("提前来访，请重新预约!")
 						}
 						let {
 							VISIT_REASON, // 来访事由
@@ -363,6 +367,10 @@
 							this.$router.replace('/registererror');
 						}else if(data.returnMsg === 3){
 							this.$message.error("没有获取到证件号码，请重新放置证件!")
+						}else if(data.returnMsg === 4){
+							this.$message.warning("超时访问，请重新预约!")
+						}else if(data.returnMsg === 5){
+							this.$message.warning("提前来访，请重新预约!")
 						}
 						let {
 							VISIT_REASON, // 来访事由
@@ -404,9 +412,15 @@
 						getfindByPassport({
 							PASSPORT: this.cardnumber
 						}).then((data) => {
-							if (data.returnMsg === 3) {
+							if (data.returnMsg === 2) {
 								this.$message.error("未查询到该记录")
 								this.$router.replace('/registererror');
+							}else if(data.returnMsg === 3){
+								this.$message.error("未查询到该记录!")
+							}else if(data.returnMsg === 4){
+								this.$message.warning("超时访问，请重新预约!")
+							}else if(data.returnMsg === 5){
+								this.$message.warning("提前来访，请重新预约!")
 							}
 							let {
 								VISIT_REASON, // 来访事由
